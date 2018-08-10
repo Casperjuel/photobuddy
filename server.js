@@ -33,9 +33,9 @@ function initialize() {
         const camera = list[0];
         console.log("Found", camera.model);
   
-        camera.takePicture({ targetPath: "/tmp/foo.XXXXXX" }, (er, tmpname) => {
-          fs.renameSync(tmpname, picturePath);
-        });
+        camera.takePicture({download: true}, function (er, data) {
+            fs.writeFileSync(__dirname + '/picture.jpg', data);
+          });
         resolve(picturePath);
           
       }

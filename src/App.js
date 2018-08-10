@@ -14,11 +14,12 @@ class App extends Component {
     axios.post('/test')
     .then(function (response) {
       console.log(response.data);
+      this.setState({ photo: response.data });
+
     })
     .catch(function (error) {
       console.log(error);
     });
-    this.setState({ photo: "https://source.unsplash.com/random" });
   };
 
   startFocus = () => {
