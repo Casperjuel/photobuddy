@@ -34,7 +34,7 @@ class App extends Component {
         <p className="App-intro">
           <button onClick={this.startBracketing}>Trigger bracketing</button>
           <button onClick={this.startFocus}>Trigger focus</button>
-          {this.state.photo && <img src={this.state.photo} alt="picture2" />}
+          <img src={this.state.photo} alt="picture2" />
         </p>
       </div>
     );
