@@ -54,7 +54,7 @@
     "start": "node scripts/start.js",
     "build": "node scripts/build.js",
     "test": "node scripts/test.js --env=jsdom",
-    "start:dev": "npm run webpack -- -w & nodemon --ignore src/ --ignore dist/ server.js"
+    "start:dev": "npm run start & nodemon --ignore src/ --ignore dist/ server.js"
   },
   "jest": {
     "collectCoverageFrom": [
