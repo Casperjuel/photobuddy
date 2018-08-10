@@ -14,4 +14,4 @@ app.get("/", (req, res, next) =>
 const port = 80;
 //Run Server
 
-app.listen(port, "photo.buddy");
+app.listen(port);
