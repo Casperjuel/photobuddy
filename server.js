@@ -29,7 +29,7 @@ function initialize() {
     GPhoto.list(list => {
       if (list.length === 0) reject("no camera");
       else {
-        const picturePath = path.join(__dirname + "/build/static/picture.jpg");
+        const picturePath = path.join("/static/picture.jpg");
         const camera = list[0];
         console.log("Found", camera.model);
   
