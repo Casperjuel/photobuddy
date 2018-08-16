@@ -14,6 +14,8 @@ GPhoto.on("log", function(level, domain, message) {
   console.log(domain, message);
 });
 
+
+
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
@@ -32,7 +34,7 @@ function initialize() {
         const picturePath = path.join("/static/picture.jpg");
         const camera = list[0];
         console.log("Found", camera.model);
-  
+        console.log(camera);
         camera.takePicture({download: true}, function (er, data) {
             fs.writeFileSync(__dirname + '/build/static/picture.jpg', data);
           });
