@@ -6,21 +6,56 @@ var chokidar = require("chokidar");
 var gphoto2 = require("gphoto2");
 var GPhoto = new gphoto2.GPhoto2();
 var fs = require("fs");
+var request = require("request");
 
 const bodyParser = require("body-parser");
+const imageDir = "./public/pictures/";
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use(function (req, res, next) {
-  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
-  res.setHeader('Access-Control-Allow-Credentials', true);
+app.use(function(req, res, next) {
+  res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET, POST, OPTIONS, PUT, PATCH, DELETE"
+  );
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "X-Requested-With,content-type"
+  );
+  res.setHeader("Access-Control-Allow-Credentials", true);
   next();
 });
 
+var ID = function() {
+  return (
+    "_" +
+    Math.random()
+      .toString(36)
+      .substr(2, 9)
+  );
+};
+
+function downloadPhoto() {
+  const url = "https://source.unsplash.com/random/4000x4000";
+
+  return new Promise((resolve, reject) => {
+    request.get({ url, encoding: "binary" }, (err, response, body) => {
+      fs.writeFileSync(
+        `${imageDir}/picture${ID()}.png`,
+        body,
+        "binary",
+        function(err) {
+          if (err) reject("no camera");
+          else console.log("The file was saved!");
+        }
+      );
+    });
+  });
+}
+
 app.post("/test", function(req, res) {
-  var takePhotoPromise = takePhoto();
+  var takePhotoPromise = downloadPhoto();
   takePhotoPromise.then(
     function(result) {
       res.end(result);
@@ -43,7 +78,6 @@ GPhoto.on("log", function(level, domain, message) {
   console.log(domain, message);
 });
 
-const imageDir = "./public/pictures/";
 var watcher = chokidar.watch(imageDir, {
   ignored: ".DS_Store",
   persistent: true
@@ -58,7 +92,7 @@ function takePhoto() {
         console.log("Found", camera.model);
 
         camera.takePicture({ download: true }, function(er, data) {
-          fs.writeFileSync(__dirname + imageDir + "/picture.jpg", data);
+          fs.writeFileSync(imageDir + "/picture.jpg", data);
         });
       }
     });
@@ -76,6 +110,7 @@ io.on("connection", function(socket) {
           "data:image/png;base64," + data.toString("base64")
         );
       });
+      findImages(socket);
     })
     .on("change", function(path) {
       findImages(socket);
@@ -102,7 +137,6 @@ const findImages = socket => {
     console.log(files);
   });
 };
-
 
 http.listen(8000, function() {
   console.log("listening on *:8000");
